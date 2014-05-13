@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		6FE4C03C1920054000E1115A /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6FE4C03B1920054000E1115A /* main.cpp */; };
 		6FE4C03E1920054000E1115A /* cal_tp02.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6FE4C03D1920054000E1115A /* cal_tp02.1 */; };
+		6FFC11B31922658400DE2F78 /* Additions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6FFC11B11922658400DE2F78 /* Additions.cpp */; };
+		6FFC11B6192265C300DE2F78 /* Dictionary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6FFC11B4192265C300DE2F78 /* Dictionary.cpp */; };
+		6FFC11B919226C4100DE2F78 /* WordMind.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6FFC11B719226C4100DE2F78 /* WordMind.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,6 +31,12 @@
 		6FE4C0381920054000E1115A /* cal_tp02 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = cal_tp02; sourceTree = BUILT_PRODUCTS_DIR; };
 		6FE4C03B1920054000E1115A /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		6FE4C03D1920054000E1115A /* cal_tp02.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = cal_tp02.1; sourceTree = "<group>"; };
+		6FFC11B11922658400DE2F78 /* Additions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Additions.cpp; sourceTree = "<group>"; };
+		6FFC11B21922658400DE2F78 /* Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Additions.h; sourceTree = "<group>"; };
+		6FFC11B4192265C300DE2F78 /* Dictionary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Dictionary.cpp; sourceTree = "<group>"; };
+		6FFC11B5192265C300DE2F78 /* Dictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Dictionary.h; sourceTree = "<group>"; };
+		6FFC11B719226C4100DE2F78 /* WordMind.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WordMind.cpp; sourceTree = "<group>"; };
+		6FFC11B819226C4100DE2F78 /* WordMind.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WordMind.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +69,12 @@
 		6FE4C03A1920054000E1115A /* cal_tp02 */ = {
 			isa = PBXGroup;
 			children = (
+				6FFC11B21922658400DE2F78 /* Additions.h */,
+				6FFC11B11922658400DE2F78 /* Additions.cpp */,
+				6FFC11B5192265C300DE2F78 /* Dictionary.h */,
+				6FFC11B4192265C300DE2F78 /* Dictionary.cpp */,
+				6FFC11B819226C4100DE2F78 /* WordMind.h */,
+				6FFC11B719226C4100DE2F78 /* WordMind.cpp */,
 				6FE4C03B1920054000E1115A /* main.cpp */,
 				6FE4C03D1920054000E1115A /* cal_tp02.1 */,
 			);
@@ -118,6 +133,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				6FE4C03C1920054000E1115A /* main.cpp in Sources */,
+				6FFC11B919226C4100DE2F78 /* WordMind.cpp in Sources */,
+				6FFC11B31922658400DE2F78 /* Additions.cpp in Sources */,
+				6FFC11B6192265C300DE2F78 /* Dictionary.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -227,6 +245,7 @@
 				6FE4C0431920054000E1115A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

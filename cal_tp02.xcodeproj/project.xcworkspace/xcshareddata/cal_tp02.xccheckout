@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>798F835F-1EE4-4366-BA86-D18D98984AD3</string>
+	<key>IDESourceControlProjectName</key>
+	<string>cal_tp02</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>7588ACC2-2B7C-4C06-9EE4-2B43216540DE</key>
+		<string>ssh://git.edr.io:7999/cal/projeto-2.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>cal_tp02.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>7588ACC2-2B7C-4C06-9EE4-2B43216540DE</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>ssh://git.edr.io:7999/cal/projeto-2.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>7588ACC2-2B7C-4C06-9EE4-2B43216540DE</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>7588ACC2-2B7C-4C06-9EE4-2B43216540DE</string>
+			<key>IDESourceControlWCCName</key>
+			<string>cal_tp02</string>
+		</dict>
+	</array>
+</dict>
+</plist>
