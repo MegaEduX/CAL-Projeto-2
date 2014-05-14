@@ -29,7 +29,9 @@ class WordMind {
     
 public:
     
-    WordMind(Dictionary *dict, int length);
+    WordMind(Dictionary *dict, unsigned long length);
+    
+    static std::vector<WordMindState> generateState(std::string correctWord, std::string guessedWord);
     
     void guess();
     

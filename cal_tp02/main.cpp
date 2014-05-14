@@ -12,7 +12,7 @@
 #include <string>
 
 #include "Dictionary.h"
-
+#include "WordMind.h"
 #include "Additions.h"
 
 int main(int argc, const char * argv[]) {
@@ -58,10 +58,10 @@ int main(int argc, const char * argv[]) {
         }
     }
     
+    std::string word;
+    
     while (true) {
         std::cout << "Please insert a word for me to guess: ";
-        
-        std::string word;
         
         std::cin >> word;
         
@@ -69,6 +69,22 @@ int main(int argc, const char * argv[]) {
             break;
         
         std::cout << "I don't know that word! ";
+        
+        word = "";
+    }
+    
+    WordMind *gameController = new WordMind(dict, word.length());
+    
+    gameController -> guess();
+    
+    while (gameController -> getCurrentWord() != word) {
+        std::cout << "Guess Certainty: " << gameController -> getCertainity() * 100.00f << "%." << std::endl;
+        
+        auto state = WordMind::generateState(word, gameController -> getCurrentWord());
+        
+        gameController -> setState(state);
+        
+        gameController -> guess();
     }
     
     return 0;

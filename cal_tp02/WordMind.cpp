@@ -15,8 +15,38 @@ typedef struct charstat {
     bool s;
 } charstat;
 
-WordMind::WordMind(Dictionary *dict, int length) {
-    _possibleWords = dict -> getWords(length);
+WordMind::WordMind(Dictionary *dict, unsigned long length) {
+    _possibleWords = dict -> getWords((int) length);
+}
+
+static std::vector<WordMindState> generateState(std::string correctWord, std::string guessedWord) {
+    std::vector<WordMindState> stateVector;
+    
+    if (correctWord.length() != guessedWord.length())
+        throw "Impossible Comparision!";
+    
+    std::map<char, int> wordMap;
+    
+    for (auto i = 0; i < correctWord.length(); i++) {
+        auto it = wordMap.find(correctWord[i]);
+        
+        if (it != wordMap.end())
+            (it -> second)++;
+        else
+            wordMap[correctWord[i]] = 1;
+    }
+    
+    for (auto i = 0; i < correctWord.length(); i++) {
+        if (correctWord[i] == guessedWord[i]) {
+            stateVector[i] = WordMindState::CORRECT;
+            
+            continue;
+        }
+        
+        //  ...
+    }
+    
+    return stateVector;
 }
 
 void WordMind::_parseGuessState() {
@@ -55,6 +85,24 @@ void WordMind::_parseGuessState() {
                 
                 break;
         }
+    }
+    
+    for (auto it = mustContainButNotAt.begin(); it != mustContainButNotAt.end(); it++) {
+        auto c = (it->second).c;
+        
+        auto f = std::find(mustNotContain.begin(), mustNotContain.end(), c);
+        
+        if (f != mustNotContain.end())
+            mustNotContain.erase(f);
+    }
+    
+    for (auto it = mustContainAt.begin(); it != mustContainAt.end(); it++) {
+        auto c = it->second;
+        
+        auto f = std::find(mustContainAt.begin(), mustContainAt.end(), c);
+        
+        if (f != mustContainAt.end())
+            mustContainAt.erase(f);
     }
     
     for (auto i = 0; i < _possibleWords.size(); i++) {
@@ -96,9 +144,7 @@ void WordMind::_parseGuessState() {
             //  mustContainButNotAt check
             //
             
-            typedef std::map<int, charstat>::iterator it_type;
-            
-            for (it_type it = mustContainButNotAt.begin(); it != mustContainButNotAt.end(); it++) {
+            for (auto it = mustContainButNotAt.begin(); it != mustContainButNotAt.end(); it++) {
                 auto cs = it->second;
                 
                 if (!cs.s) {
