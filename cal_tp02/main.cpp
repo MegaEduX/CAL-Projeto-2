@@ -18,10 +18,12 @@
 int main(int argc, const char * argv[]) {
     std::cout << "Welcome to WordMind!" << std::endl << std::endl;
     
+    //  auto state = WordMind::generateState("AABERCROMBIE", "ABAARCROBMXX");
+    
     Dictionary *dict = nullptr;
     
     try {
-        dict = new Dictionary("dictionary.wmdict");
+        dict = new Dictionary("default.wmdict");
         
         std::cout << "A dictionary with " << dict->getWords().size() << " words was found. Use it? (Y)es/(N)o: ";
         
@@ -77,15 +79,30 @@ int main(int argc, const char * argv[]) {
     
     gameController -> guess();
     
-    while (gameController -> getCurrentWord() != word) {
+    unsigned int tries = 0;
+    
+    while (tries++, gameController -> getCurrentWord() != word) {
         std::cout << "Guess Certainty: " << gameController -> getCertainity() * 100.00f << "%." << std::endl;
         
         auto state = WordMind::generateState(word, gameController -> getCurrentWord());
         
         gameController -> setState(state);
         
-        gameController -> guess();
+        try {
+            gameController -> guess();
+        } catch (WordMindRuntimeFailureException exc) {
+            std::cout << "Well, this is embarassing. I wasn't able to guess the word for some reason..." << std::endl;
+            
+            exit(1);
+        } catch (...) {
+            std::cout << "An unknown error has occoured..." << std::endl;
+            
+            exit(2);
+        }
+        
     }
+    
+    std::cout << "Found in " << tries << " tries.";
     
     return 0;
 }

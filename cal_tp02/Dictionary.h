@@ -10,7 +10,6 @@
 #define __cal_tp02__Dictionary__
 
 #include <iostream>
-
 #include <vector>
 
 class Dictionary {

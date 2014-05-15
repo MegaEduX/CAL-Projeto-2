@@ -10,8 +10,16 @@
 
 #include "Additions.h"
 
+#include <algorithm>
+
 Dictionary::Dictionary(std::string path) {
-    _dict = Additions::explode("\n", Additions::get_file_contents(path.c_str()));
+    auto dict = Additions::explode("\n", Additions::get_file_contents(path.c_str()));
+    
+    for (auto word : dict) {
+        std::transform(word.begin(), word.end(), word.begin(), ::tolower);
+        
+        _dict.push_back(word);
+    }
 }
 
 std::vector<std::string> Dictionary::getWords(int length) {

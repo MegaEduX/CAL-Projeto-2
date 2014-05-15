@@ -13,7 +13,12 @@
 
 #include "Dictionary.h"
 
-enum class WordMindState : unsigned int { NOPE = 0, WRONG_PLACE = 1, CORRECT = 2 };
+enum class WordMindState : int { UNPROCESSED = -1, NOPE = 0, WRONG_PLACE = 1, CORRECT = 2 };
+    
+typedef struct charstat {
+    char c;
+    bool s;
+} charstat;
 
 class WordMind {
     
@@ -40,6 +45,10 @@ public:
     std::string getCurrentWord();
     
     double getCertainity();
+    
+};
+
+class WordMindRuntimeFailureException {
     
 };
 

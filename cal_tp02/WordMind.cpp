@@ -10,16 +10,11 @@
 
 #include "WordMind.h"
 
-typedef struct charstat {
-    char c;
-    bool s;
-} charstat;
-
 WordMind::WordMind(Dictionary *dict, unsigned long length) {
     _possibleWords = dict -> getWords((int) length);
 }
 
-static std::vector<WordMindState> generateState(std::string correctWord, std::string guessedWord) {
+std::vector<WordMindState> WordMind::generateState(std::string correctWord, std::string guessedWord) {
     std::vector<WordMindState> stateVector;
     
     if (correctWord.length() != guessedWord.length())
@@ -36,14 +31,32 @@ static std::vector<WordMindState> generateState(std::string correctWord, std::st
             wordMap[correctWord[i]] = 1;
     }
     
-    for (auto i = 0; i < correctWord.length(); i++) {
+    //  Initialize the State Vector
+    
+    for (auto i = 0; i < correctWord.length(); i++)
+        stateVector.push_back(WordMindState::UNPROCESSED);
+    
+    //  Check for Exact Matches
+    
+    for (auto i = 0; i < correctWord.length(); i++)
         if (correctWord[i] == guessedWord[i]) {
             stateVector[i] = WordMindState::CORRECT;
-            
-            continue;
+            wordMap[correctWord[i]]--;
         }
+    
+    //  Check for Out of Place / Not Found
+    
+    for (auto i = 0; i < correctWord.length(); i++) {
+        if (stateVector[i] != WordMindState::UNPROCESSED)
+            continue;
         
-        //  ...
+        auto it = wordMap.find(guessedWord[i]);
+        
+        if (it != wordMap.end() && wordMap[guessedWord[i]]) {
+            stateVector[i] = WordMindState::WRONG_PLACE;
+            wordMap[guessedWord[i]]--;
+        } else
+            stateVector[i] = WordMindState::NOPE;
     }
     
     return stateVector;
@@ -54,10 +67,14 @@ void WordMind::_parseGuessState() {
     
     std::map<int, char> mustContainAt;
     std::map<int, charstat> mustContainButNotAt;
+    std::map<char, int> mustContainExactly;
     
     for (auto i = 0; i < _currentWord.length(); i++) {
         switch (_guessState[i]) {
             case WordMindState::NOPE:
+                
+                if (std::find(mustNotContain.begin(), mustNotContain.end(), _currentWord[i]) != mustNotContain.end())
+                    break;
                 
                 mustNotContain.push_back(_currentWord[i]);
                 
@@ -87,33 +104,70 @@ void WordMind::_parseGuessState() {
         }
     }
     
-    for (auto it = mustContainButNotAt.begin(); it != mustContainButNotAt.end(); it++) {
-        auto c = (it->second).c;
-        
-        auto f = std::find(mustNotContain.begin(), mustNotContain.end(), c);
+    for (auto c : mustContainAt) {
+        auto f = std::find(mustNotContain.begin(), mustNotContain.end(), c.second);
         
         if (f != mustNotContain.end())
             mustNotContain.erase(f);
     }
     
-    for (auto it = mustContainAt.begin(); it != mustContainAt.end(); it++) {
+    for (auto it = mustContainButNotAt.begin(); it != mustContainButNotAt.end(); it++) {
+        auto c = (it->second).c;
+        
+        if (mustContainExactly.find(c) != mustContainExactly.end())
+            continue;
+        
+        auto notPos = std::find(mustNotContain.begin(), mustNotContain.end(), c);
+        
+        if (notPos != mustNotContain.end()) {
+            //  We can now know EXACTLY how many characters "c" are in the word.
+            
+            unsigned int count = 0;
+            
+            for (auto it = mustContainButNotAt.begin(); it != mustContainButNotAt.end(); it++)
+                if ((it -> second).c == c)
+                    count++;
+            
+            /*  for (auto i = 0; i < _currentWord.length(); i++)
+                if (_currentWord[i] == c)
+                    count++;    */
+            
+            mustContainExactly.insert(std::pair<char, int>(c, count));
+            
+            mustNotContain.erase(notPos);
+        }
+    }
+    
+    /*  for (auto it = mustContainAt.begin(); it != mustContainAt.end(); it++) {
         auto c = it->second;
         
         auto f = std::find(mustContainAt.begin(), mustContainAt.end(), c);
         
         if (f != mustContainAt.end())
             mustContainAt.erase(f);
-    }
+    }   -- This code makes no sense. -- */
+    
+    
+    std::vector<char> mncHolder;
+    std::map<int, char> mcaHolder;
+    std::map<int, charstat> mcbnaHolder;
+    std::map<char, int> mceHolder;
+    
+    mncHolder = mustNotContain;
+    
+    std::copy(mustContainAt.begin(), mustContainAt.end(), std::inserter(mcaHolder, mcaHolder.end()));
+    std::copy(mustContainButNotAt.begin(), mustContainButNotAt.end(), std::inserter(mcbnaHolder, mcbnaHolder.end()));
+    std::copy(mustContainExactly.begin(), mustContainExactly.end(), std::inserter(mceHolder, mceHolder.end()));
     
     for (auto i = 0; i < _possibleWords.size(); i++) {
-        auto word = _possibleWords[i];
+        auto word = _possibleWords[i]
         
         bool removeWord = false;
         
         unsigned int mcbnaOccurences = 0;    //  Must contain but not at occurence counter...
         
-        for (auto i = 0; i < word.length(); i++) {
-            auto c = word[i];
+        for (auto j = 0; j < word.length(); j++) {
+            auto c = word[j];
             
             //
             //  mustNotContain check
@@ -130,11 +184,18 @@ void WordMind::_parseGuessState() {
                 break;
             
             //
+            //  mustContainExactly check
+            //
+            
+            if (mustContainExactly.find(c) != mustContainExactly.end()) //  look here!
+                (mustContainExactly.find(c)->second)--;
+            
+            //
             //  mustContainAt check
             //
             
-            if (mustContainAt.find(i) != mustContainAt.end())
-                if (mustContainAt[i] != c)
+            if (mustContainAt.find(j) != mustContainAt.end())
+                if (mustContainAt[j] != c)
                     removeWord = true;
             
             if (removeWord)
@@ -147,30 +208,49 @@ void WordMind::_parseGuessState() {
             for (auto it = mustContainButNotAt.begin(); it != mustContainButNotAt.end(); it++) {
                 auto cs = it->second;
                 
-                if (!cs.s) {
+                //if (!cs.s) {
                     if (cs.c == c) {
-                        it->second.s = true;
+                        //it->second.s = true;
                         
                         mcbnaOccurences++;
                     }
                     
-                    break;
-                }
+                    //break;
+                //}
             }
             
-            if (mustContainButNotAt.find(i) != mustContainButNotAt.end())
-                if (mustContainButNotAt[i].c == c)
+            if (mustContainButNotAt.find(j) != mustContainButNotAt.end())
+                if (mustContainButNotAt[j].c == c)
                     removeWord = true;
             
             if (removeWord)
                 break;
         }
         
-        if (removeWord || mcbnaOccurences != mustContainButNotAt.size()) {
+        for (auto it = mustContainExactly.begin(); it != mustContainExactly.end(); it++)
+            if (it->second != 0) {
+                removeWord = true;
+                
+                break;
+            }
+                
+        
+        if (removeWord || mcbnaOccurences < mustContainButNotAt.size()) {
             _possibleWords.erase(_possibleWords.begin() + i);
             
             i--;
         }
+        
+        mustNotContain = std::vector<char>();
+        mustContainAt = std::map<int, char>();
+        mustContainButNotAt = std::map<int, charstat>();
+        mustContainExactly = std::map<char, int>();
+        
+        mustNotContain = mncHolder;
+        
+        std::copy(mcaHolder.begin(), mcaHolder.end(), std::inserter(mustContainAt, mustContainAt.end()));
+        std::copy(mcbnaHolder.begin(), mcbnaHolder.end(), std::inserter(mustContainButNotAt, mustContainButNotAt.end()));
+        std::copy(mceHolder.begin(), mceHolder.end(), std::inserter(mustContainExactly, mustContainExactly.end()));
     }
 }
 
@@ -179,6 +259,9 @@ void WordMind::guess() {
         _parseGuessState();
     
     _currentWord = _possibleWords[0];
+    
+    if (!_possibleWords.size())
+        throw WordMindRuntimeFailureException();
     
     _possibleWords.erase(_possibleWords.begin());
 }
