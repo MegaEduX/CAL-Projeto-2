@@ -66,7 +66,7 @@ void WordMind::_parseGuessState() {
     std::vector<char> mustNotContain;
     
     std::map<int, char> mustContainAt;
-    std::map<int, charstat> mustContainButNotAt;
+    std::map<int, char> mustContainButNotAt;
     std::map<char, int> mustContainExactly;
     
     for (auto i = 0; i < _currentWord.length(); i++) {
@@ -80,15 +80,11 @@ void WordMind::_parseGuessState() {
                 
                 break;
                 
-            case WordMindState::WRONG_PLACE: {
+            case WordMindState::WRONG_PLACE:
                 
-                charstat cs = { .c = _currentWord[i], .s = false };
-                
-                mustContainButNotAt.insert(std::pair<int, charstat>(i, cs));
+                mustContainButNotAt.insert(std::pair<int, char>(i, _currentWord[i]));
                 
                 break;
-                
-            }
                 
             case WordMindState::CORRECT:
                 
@@ -112,7 +108,7 @@ void WordMind::_parseGuessState() {
     }
     
     for (auto it = mustContainButNotAt.begin(); it != mustContainButNotAt.end(); it++) {
-        auto c = (it->second).c;
+        auto c = it->second;
         
         if (mustContainExactly.find(c) != mustContainExactly.end())
             continue;
@@ -125,12 +121,8 @@ void WordMind::_parseGuessState() {
             unsigned int count = 0;
             
             for (auto it = mustContainButNotAt.begin(); it != mustContainButNotAt.end(); it++)
-                if ((it -> second).c == c)
+                if (it -> second == c)
                     count++;
-            
-            /*  for (auto i = 0; i < _currentWord.length(); i++)
-                if (_currentWord[i] == c)
-                    count++;    */
             
             mustContainExactly.insert(std::pair<char, int>(c, count));
             
@@ -138,19 +130,9 @@ void WordMind::_parseGuessState() {
         }
     }
     
-    /*  for (auto it = mustContainAt.begin(); it != mustContainAt.end(); it++) {
-        auto c = it->second;
-        
-        auto f = std::find(mustContainAt.begin(), mustContainAt.end(), c);
-        
-        if (f != mustContainAt.end())
-            mustContainAt.erase(f);
-    }   -- This code makes no sense. -- */
-    
-    
     std::vector<char> mncHolder;
     std::map<int, char> mcaHolder;
-    std::map<int, charstat> mcbnaHolder;
+    std::map<int, char> mcbnaHolder;
     std::map<char, int> mceHolder;
     
     mncHolder = mustNotContain;
@@ -160,7 +142,7 @@ void WordMind::_parseGuessState() {
     std::copy(mustContainExactly.begin(), mustContainExactly.end(), std::inserter(mceHolder, mceHolder.end()));
     
     for (auto i = 0; i < _possibleWords.size(); i++) {
-        auto word = _possibleWords[i]
+        auto word = _possibleWords[i];
         
         bool removeWord = false;
         
@@ -169,9 +151,7 @@ void WordMind::_parseGuessState() {
         for (auto j = 0; j < word.length(); j++) {
             auto c = word[j];
             
-            //
             //  mustNotContain check
-            //
             
             for (auto mnc : mustNotContain)
                 if (c == mnc) {
@@ -183,16 +163,12 @@ void WordMind::_parseGuessState() {
             if (removeWord)
                 break;
             
-            //
             //  mustContainExactly check
-            //
             
-            if (mustContainExactly.find(c) != mustContainExactly.end()) //  look here!
+            if (mustContainExactly.find(c) != mustContainExactly.end())
                 (mustContainExactly.find(c)->second)--;
             
-            //
             //  mustContainAt check
-            //
             
             if (mustContainAt.find(j) != mustContainAt.end())
                 if (mustContainAt[j] != c)
@@ -201,26 +177,17 @@ void WordMind::_parseGuessState() {
             if (removeWord)
                 break;
             
-            //
             //  mustContainButNotAt check
-            //
             
             for (auto it = mustContainButNotAt.begin(); it != mustContainButNotAt.end(); it++) {
                 auto cs = it->second;
                 
-                //if (!cs.s) {
-                    if (cs.c == c) {
-                        //it->second.s = true;
-                        
-                        mcbnaOccurences++;
-                    }
-                    
-                    //break;
-                //}
+                if (cs == c)
+                    mcbnaOccurences++;
             }
             
             if (mustContainButNotAt.find(j) != mustContainButNotAt.end())
-                if (mustContainButNotAt[j].c == c)
+                if (mustContainButNotAt[j] == c)
                     removeWord = true;
             
             if (removeWord)
@@ -243,7 +210,7 @@ void WordMind::_parseGuessState() {
         
         mustNotContain = std::vector<char>();
         mustContainAt = std::map<int, char>();
-        mustContainButNotAt = std::map<int, charstat>();
+        mustContainButNotAt = std::map<int, char>();
         mustContainExactly = std::map<char, int>();
         
         mustNotContain = mncHolder;

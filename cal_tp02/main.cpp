@@ -18,8 +18,6 @@
 int main(int argc, const char * argv[]) {
     std::cout << "Welcome to WordMind!" << std::endl << std::endl;
     
-    //  auto state = WordMind::generateState("AABERCROMBIE", "ABAARCROBMXX");
-    
     Dictionary *dict = nullptr;
     
     try {
@@ -67,6 +65,8 @@ int main(int argc, const char * argv[]) {
         
         std::cin >> word;
         
+        std::transform(word.begin(), word.end(), word.begin(), ::tolower);
+        
         if (dict -> containsWord(word))
             break;
         
@@ -75,6 +75,10 @@ int main(int argc, const char * argv[]) {
         word = "";
     }
     
+    std::cout << std::endl;
+    
+    auto startTime = Additions::getTimeMS64();
+    
     WordMind *gameController = new WordMind(dict, word.length());
     
     gameController -> guess();
@@ -82,7 +86,7 @@ int main(int argc, const char * argv[]) {
     unsigned int tries = 0;
     
     while (tries++, gameController -> getCurrentWord() != word) {
-        std::cout << "Guess Certainty: " << gameController -> getCertainity() * 100.00f << "%." << std::endl;
+        std::cout << "[INFO] Guess Certainty (Try #" << tries << "): " << gameController -> getCertainity() * 100.00f << "%." << std::endl;
         
         auto state = WordMind::generateState(word, gameController -> getCurrentWord());
         
@@ -91,18 +95,20 @@ int main(int argc, const char * argv[]) {
         try {
             gameController -> guess();
         } catch (WordMindRuntimeFailureException exc) {
-            std::cout << "Well, this is embarassing. I wasn't able to guess the word for some reason..." << std::endl;
+            std::cout << std::endl << "Well, this is embarassing. I wasn't able to guess the word for some reason..." << std::endl;
             
             exit(1);
         } catch (...) {
-            std::cout << "An unknown error has occoured..." << std::endl;
+            std::cout << std::endl << "An unknown error has occoured..." << std::endl;
             
             exit(2);
         }
         
     }
     
-    std::cout << "Found in " << tries << " tries.";
+    auto elapsed = Additions::getTimeMS64() - startTime;
+    
+    std::cout << std::endl << "Found the word! Tries: " << tries << ". Time Elapsed: " << elapsed << " ms." << std::endl;
     
     return 0;
 }
